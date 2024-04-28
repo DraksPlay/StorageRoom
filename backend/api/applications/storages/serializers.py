@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
-from applications.storages.models import Storage
+from applications.storages.models import (
+    Storage,
+    Category
+)
 
 
 class StorageSerializer(serializers.Serializer):
@@ -15,4 +18,11 @@ class StorageReadSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Storage
+        fields = "__all__"
+
+
+class CategoryReadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Category
         fields = "__all__"

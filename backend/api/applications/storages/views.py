@@ -12,6 +12,7 @@ from applications.storages.models import (
 from applications.storages.serializers import (
     StorageSerializer,
     StorageReadSerializer,
+    CategoryReadSerializer
 )
 from applications.users.models import User
 
@@ -52,12 +53,12 @@ def read_storage(request: Request,
                  ) -> Response:
     try:
         storage = Storage.objects.get(pk=storage_id)
-        serialized_clients = StorageReadSerializer(data=storage.__dict__)
+        storage_serializer = StorageReadSerializer(data=storage.__dict__)
 
-        if serialized_clients.is_valid():
-            return Response(serialized_clients.data, status=status.HTTP_200_OK)
+        if storage_serializer.is_valid():
+            return Response(storage_serializer.data, status=status.HTTP_200_OK)
 
-        return Response(serialized_clients.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(storage_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except ObjectDoesNotExist:
         return Response({"Error": f"Storage not found"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
@@ -70,9 +71,23 @@ def read_storages(request: Request
                   ) -> Response:
     storages = Storage.objects.all()
 
-    serialized_clients = StorageReadSerializer(data=list(storages.values()), many=True)
+    storage_serializer = StorageReadSerializer(data=list(storages.values()), many=True)
 
-    if serialized_clients.is_valid():
-        return Response(serialized_clients.data, status=status.HTTP_200_OK)
+    if storage_serializer.is_valid():
+        return Response(storage_serializer.data, status=status.HTTP_200_OK)
 
-    return Response(serialized_clients.errors, status=status.HTTP_400_BAD_REQUEST)
+    return Response(storage_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(method='GET', tags=["Category"])
+@api_view(['GET'])
+def read_categories(request: Request
+                    ) -> Response:
+    categories = Category.objects.all()
+
+    category_serializer = CategoryReadSerializer(data=list(categories.values()), many=True)
+
+    if category_serializer.is_valid():
+        return Response(category_serializer.data, status=status.HTTP_200_OK)
+
+    return Response(category_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
