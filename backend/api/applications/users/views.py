@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from applications.users.models import User
 from applications.users.serializers import (
     UserSerializer,
+    UserReadSerializer,
     UserUpdateSerializer
 )
 
@@ -16,16 +17,16 @@ from applications.users.serializers import (
 @api_view(['POST'])
 def create_user(request: Request
                 ) -> Response:
-    user = UserSerializer(data=request.data)
-    if user.is_valid():
-        email = user.validated_data.get('email')
-        password = user.validated_data.get('password')
-        balance = user.validated_data.get('balance')
-        client = User.objects.create(email=email, password=password, balance=balance)
-        client.save()
-        return Response(user.data, status=status.HTTP_201_CREATED)
+    user_serializer = UserSerializer(data=request.data)
+    if user_serializer.is_valid():
+        email = user_serializer.validated_data.get('email')
+        password = user_serializer.validated_data.get('password')
+        balance = user_serializer.validated_data.get('balance')
+        user = User(email=email, password=password, balance=balance)
+        user.save()
+        return Response(user_serializer.data, status=status.HTTP_201_CREATED)
     else:
-        return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @swagger_auto_schema(method='GET', tags=["User"])
@@ -35,12 +36,14 @@ def read_user(request: Request,
               ) -> Response:
     try:
         user = User.objects.get(pk=user_id)
-        serialized_clients = UserSerializer(data=user.__dict__)
+        serialized_clients = UserReadSerializer(data=user.__dict__)
 
         if serialized_clients.is_valid():
             return Response(serialized_clients.data, status=status.HTTP_200_OK)
 
         return Response(serialized_clients.errors, status=status.HTTP_400_BAD_REQUEST)
+    except ObjectDoesNotExist:
+        return Response({"Error": f"User not found"}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"Error": f"Unexpected error {e} occurred."}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -51,7 +54,7 @@ def read_users(request: Request
                ) -> Response:
     users = User.objects.all()
 
-    serialized_clients = UserSerializer(data=list(users.values()), many=True)
+    serialized_clients = UserReadSerializer(data=list(users.values()), many=True)
 
     if serialized_clients.is_valid():
         return Response(serialized_clients.data, status=status.HTTP_200_OK)

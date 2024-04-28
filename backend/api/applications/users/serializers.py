@@ -10,11 +10,25 @@ class UserSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class UserReadSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            "email",
+            "balance"
+        )
+
+
 class UserUpdateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"
+        fields = (
+            "email",
+            "password",
+            "balance"
+        )
 
     def update(self,
                instance: User,
