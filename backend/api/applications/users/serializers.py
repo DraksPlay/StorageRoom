@@ -11,10 +11,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserReadSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
 
     class Meta:
         model = User
         fields = (
+            "id",
             "email",
             "balance"
         )

@@ -52,8 +52,8 @@ def read_storage(request: Request,
                  storage_id: int
                  ) -> Response:
     try:
-        storage = Storage.objects.get(pk=storage_id)
-        storage_serializer = StorageReadSerializer(data=storage.__dict__)
+        storage = Storage.objects.filter(pk=storage_id)
+        storage_serializer = StorageReadSerializer(data=storage.values())
 
         if storage_serializer.is_valid():
             return Response(storage_serializer.data, status=status.HTTP_200_OK)
@@ -71,7 +71,11 @@ def read_storages(request: Request
                   ) -> Response:
     storages = Storage.objects.all()
 
-    storage_serializer = StorageReadSerializer(data=list(storages.values()), many=True)
+    storages_list = list(storages.values(
+        "id", "category__name", "user__email", "price", "start_at", "finish_at"
+    ))
+
+    storage_serializer = StorageReadSerializer(data=storages_list, many=True)
 
     if storage_serializer.is_valid():
         return Response(storage_serializer.data, status=status.HTTP_200_OK)
