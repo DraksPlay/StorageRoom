@@ -21,10 +21,11 @@ def create_user(request: Request
     if user_serializer.is_valid():
         email = user_serializer.validated_data.get('email')
         password = user_serializer.validated_data.get('password')
-        balance = user_serializer.validated_data.get('balance')
-        user = User(email=email, password=password, balance=balance)
+        user = User(email=email, password=password)
         user.save()
-        return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+        data_response = dict(user_serializer.data)
+        data_response.update(id=user.pk)
+        return Response(data_response, status=status.HTTP_201_CREATED)
     else:
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
