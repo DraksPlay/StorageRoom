@@ -1,19 +1,74 @@
+import {useState} from "react";
+import {useNavigate} from "react-router-dom";
+
+
 const SignUp = () => {
+
+    const [formData, setFormData] = useState(
+        { "email": '', "password": '', "password_repeat": ''}
+    );
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (event: React.FormEvent) => {
+        event.preventDefault();
+        if (formData.password != formData.password_repeat) {
+            return false;
+        }
+
+        const {password_repeat, ...newFormData} = formData;
+
+        try {
+
+            const response = await fetch('http://127.0.0.1:8000/api/users/create_user/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newFormData)
+            });
+
+            if (response.ok) { // Обрабатываем успешный ответ от API
+                navigate("/");
+            } else { // Обрабатываем ошибку
+                console.error('Ошибка при отправке данных');
+
+            }
+        } catch (error) {
+            console.error('Произошла ошибка:', error);
+        }
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData({
+            ...formData,
+            [event.target.name]: event.target.value
+        });
+    };
+
+
     return (
         <div>
-            <form className="max-w-sm mx-auto">
+            <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
                 <div className="mb-5">
                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
                         email</label>
                     <input type="email" id="email"
                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                           placeholder="name@flowbite.com" required/>
+                           placeholder="name@gmail.com"
+                           name="email"
+                           value={formData.email}
+                           onChange={handleChange}
+                           required/>
                 </div>
                 <div className="mb-5">
                     <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
                         password</label>
                     <input type="password" id="password"
                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                           name="password"
+                           value={formData.password}
+                           onChange={handleChange}
                            required/>
                 </div>
                 <div className="mb-5">
@@ -21,7 +76,10 @@ const SignUp = () => {
                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Repeat
                         password</label>
                     <input type="password" id="repeat-password"
+                           name="password_repeat"
                            className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                           value={formData.password_repeat}
+                           onChange={handleChange}
                            required/>
                 </div>
                 <div className="flex items-start mb-5">
