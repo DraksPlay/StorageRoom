@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'drf_yasg',
 
     'applications.users',
-    'applications.storages'
+    'applications.storages',
+    'applications.oauth'
 ]
 
 MIDDLEWARE = [

@@ -27,4 +27,6 @@ urlpatterns = [
     path('api/json/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/users/', include('applications.users.urls')),
     path('api/storages/', include('applications.storages.urls')),
+
+    path('auth/', include('applications.oauth.urls')),
 ]
