@@ -7,6 +7,6 @@ from applications.oauth.views import (
 
 
 urlpatterns = [
-    path('create_tokens/', create_tokens, name='create_tokens'),
-    path('update_tokens/', update_tokens, name='update_tokens'),
+    path('create_tokens/', create_tokens, name='create-tokens'),
+    path('update_tokens/', update_tokens, name='update-tokens'),
 ]

@@ -11,6 +11,12 @@ from applications.users.serializers import (
     UserReadSerializer,
     UserUpdateSerializer
 )
+from applications.oauth.services.oauth2.decorators import oauth_permission
+from applications.oauth.services.oauth2 import OAuth2Refresh
+from config import OAUTH_SECRET_KEY
+
+
+oauth = OAuth2Refresh(secret_key=OAUTH_SECRET_KEY)
 
 
 @swagger_auto_schema(method='POST', request_body=UserSerializer, tags=["User"])
@@ -32,6 +38,7 @@ def create_user(request: Request
 
 @swagger_auto_schema(method='GET', tags=["User"])
 @api_view(['GET'])
+@oauth_permission(oauth)
 def read_user(request: Request,
               user_id: int
               ) -> Response:
@@ -51,6 +58,7 @@ def read_user(request: Request,
 
 @swagger_auto_schema(method='GET', tags=["User"])
 @api_view(['GET'])
+@oauth_permission(oauth)
 def read_users(request: Request
                ) -> Response:
     users = User.objects.all()
@@ -65,6 +73,7 @@ def read_users(request: Request
 
 @swagger_auto_schema(method='PATCH', request_body=UserUpdateSerializer, tags=["User"])
 @api_view(['PATCH'])
+@oauth_permission(oauth)
 def update_user(request: Request,
                 user_id: int
                 ) -> Response:
@@ -84,6 +93,7 @@ def update_user(request: Request,
 
 @swagger_auto_schema(method='DELETE', tags=["User"])
 @api_view(['DELETE'])
+@oauth_permission(oauth)
 def delete_user(request: Request,
                 user_id: int
                 ) -> Response:

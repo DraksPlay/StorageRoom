@@ -35,8 +35,8 @@ def create_tokens(request: Request
         return Response(token_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@swagger_auto_schema(method='UPDATE', request_body=TokenUpdateSerializer, tags=["Token"])
-@api_view(['UPDATE'])
+@swagger_auto_schema(method='PUT', request_body=TokenUpdateSerializer, tags=["Token"])
+@api_view(['PUT'])
 def update_tokens(request: Request,
                   ) -> Response:
     try:

@@ -12,6 +12,8 @@ class AuthMiddleware:
     def __call__(self,
                  request: HttpRequest
                  ) -> HttpResponse:
+        access_token = request.headers.get("Authorization")
+
 
         response = self.get_response(request)
 
