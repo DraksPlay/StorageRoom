@@ -15,10 +15,17 @@ from applications.storages.serializers import (
     CategoryReadSerializer
 )
 from applications.users.models import User
+from applications.oauth.services.oauth2.decorators import oauth_permission
+from applications.oauth.services.oauth2 import OAuth2Refresh
+from config import OAUTH_SECRET_KEY
+
+
+oauth = OAuth2Refresh(secret_key=OAUTH_SECRET_KEY)
 
 
 @swagger_auto_schema(method='POST', request_body=StorageSerializer, tags=["Storage"])
 @api_view(['POST'])
+@oauth_permission(oauth)
 def create_storage(request: Request
                    ) -> Response:
     storage_serializer = StorageSerializer(data=request.data)
@@ -48,6 +55,7 @@ def create_storage(request: Request
 
 @swagger_auto_schema(method='GET', tags=["Storage"])
 @api_view(['GET'])
+@oauth_permission(oauth)
 def read_storage(request: Request,
                  storage_id: int
                  ) -> Response:
@@ -67,6 +75,7 @@ def read_storage(request: Request,
 
 @swagger_auto_schema(method='GET', tags=["Storage"])
 @api_view(['GET'])
+@oauth_permission(oauth)
 def read_storages(request: Request
                   ) -> Response:
     storages = Storage.objects.all()
@@ -85,6 +94,7 @@ def read_storages(request: Request
 
 @swagger_auto_schema(method='GET', tags=["Category"])
 @api_view(['GET'])
+@oauth_permission(oauth)
 def read_categories(request: Request
                     ) -> Response:
     categories = Category.objects.all()
