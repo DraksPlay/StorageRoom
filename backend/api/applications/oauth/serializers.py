@@ -22,3 +22,8 @@ class TokenUpdateSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
+
+
+class SignInSerializer(serializers.Serializer):
+    login = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=64)
