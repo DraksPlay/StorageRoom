@@ -13,7 +13,7 @@ const Auth = () => {
         event.preventDefault();
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/users/create_user/', {
+            const response = await fetch('http://127.0.0.1:8000/auth/sign-in/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

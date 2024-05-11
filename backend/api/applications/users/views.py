@@ -13,6 +13,7 @@ from applications.users.serializers import (
 )
 from applications.oauth.services.oauth2.decorators import oauth_permission
 from applications.oauth.services.oauth2 import OAuth2Refresh
+from applications.oauth.models import Token
 from config import OAUTH_SECRET_KEY
 
 
@@ -29,8 +30,13 @@ def create_user(request: Request
         password = user_serializer.validated_data.get('password')
         user = User(email=email, password=password)
         user.save()
-        data_response = dict(user_serializer.data)
-        data_response.update(id=user.pk)
+        user.refresh_from_db()
+
+        payload = {"user_id": user.id}
+        access_token, refresh_token = oauth.create_tokens(payload=payload)
+        token_obj = Token(refresh_token=refresh_token)
+        token_obj.save()
+        data_response = {"access_token": access_token, "refresh_token": refresh_token}
         return Response(data_response, status=status.HTTP_201_CREATED)
     else:
         return Response(user_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
