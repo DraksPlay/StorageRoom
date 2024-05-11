@@ -28,11 +28,13 @@ const SignUp = () => {
                 body: JSON.stringify(newFormData)
             });
 
-            if (response.ok) { // Обрабатываем успешный ответ от API
+            if (response.ok) {
+                const responseData = await response.json();
+                localStorage.setItem('access_token', responseData.access_token);
+                localStorage.setItem('refresh_token', responseData.refresh_token);
                 navigate("/");
-            } else { // Обрабатываем ошибку
+            } else {
                 console.error('Ошибка при отправке данных');
-
             }
         } catch (error) {
             console.error('Произошла ошибка:', error);
