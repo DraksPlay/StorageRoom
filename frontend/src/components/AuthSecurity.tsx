@@ -1,11 +1,9 @@
-import {BrowserRouter} from "react-router-dom";
-import {useEffect, useState} from "react";
-import {AuthContext} from "./context";
-import AppRouter from "./pages/AppRouter.tsx";
+import { useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 
-
-function App() {
+const AuthSecurity = ({ component: Component, ...rest }: any) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -20,27 +18,25 @@ function App() {
                     },
                     body: JSON.stringify(formData)
                 });
+
                 if (response.ok) {
                     console.log(response)
                     setIsAuthenticated(true);
+                    console.log(isAuthenticated)
                 }
             } catch (error) {
                 console.error(error);
             }
         };
+
         checkAuthentication();
     }, []);
+    console.log(isAuthenticated)
+    if (!isAuthenticated) {
+        return <Navigate to="/auth" state={{ from: location }} replace />;
+    }
 
-    return (
-        <AuthContext.Provider value={{
-            isAuthenticated,
-            setIsAuthenticated
-        }}>
-            <BrowserRouter>
-                <AppRouter />
-            </BrowserRouter>
-      </AuthContext.Provider>
-    )
-}
+    return <Component {...rest} />;
+};
 
-export default App
+export default AuthSecurity;

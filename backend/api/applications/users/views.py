@@ -31,7 +31,6 @@ def create_user(request: Request
         user = User(email=email, password=password)
         user.save()
         user.refresh_from_db()
-
         payload = {"user_id": user.id}
         access_token, refresh_token = oauth.create_tokens(payload=payload)
         token_obj = Token(refresh_token=refresh_token)

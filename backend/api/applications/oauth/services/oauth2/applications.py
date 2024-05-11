@@ -30,7 +30,7 @@ class OAuth2:
 
     def check_token(self,
                     token: str
-                    ) -> dict | bool:
+                    ) -> dict:
         check_data = self._core.check_token(token)
 
         return check_data
@@ -69,7 +69,7 @@ class OAuth2Refresh:
 
     def check_token(self,
                     token: str
-                    ) -> dict | bool:
+                    ) -> dict:
         check_data = self._core.check_token(token)
 
         return check_data

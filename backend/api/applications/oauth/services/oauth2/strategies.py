@@ -33,18 +33,18 @@ class AuthStrategy:
 
     def check_token(self,
                     token: str,
-                    ):
-        check_data = self._decode_jwt(token)
+                    ) -> dict:
+        self._decode_jwt(token)
 
         result = {}
 
-        if not check_data:
+        if self.decode_error is None:
             result['status'] = True
         else:
             result['status'] = False
             result['error'] = self.decode_error
 
-        return check_data
+        return result
 
     def get_payload_from_token(self,
                                token: str,

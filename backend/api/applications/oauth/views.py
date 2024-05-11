@@ -10,7 +10,8 @@ from applications.oauth.models import Token
 from applications.oauth.serializers import (
     TokenSerializer,
     TokenUpdateSerializer,
-    SignInSerializer
+    SignInSerializer,
+    CheckAuthSerializer
 )
 from applications.oauth.services.oauth2 import OAuth2Refresh
 from config import OAUTH_SECRET_KEY
@@ -85,5 +86,24 @@ def sign_in(request: Request
             return Response(data_response, status=status.HTTP_200_OK)
         else:
             return Response(sign_in_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except ObjectDoesNotExist:
+        return Response({"Error": f"User not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@swagger_auto_schema(method='POST', request_body=CheckAuthSerializer, tags=["Auth"])
+@api_view(['POST'])
+def check_auth(request: Request
+               ) -> Response:
+    try:
+        check_auth_serializer = CheckAuthSerializer(data=request.data)
+        if check_auth_serializer.is_valid():
+            access_token = check_auth_serializer.validated_data.get('access_token')
+            oauth_data = oauth.check_token(access_token)
+            if not oauth_data.get("status", False):
+                return Response(status=status.HTTP_403_FORBIDDEN)
+
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(check_auth_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except ObjectDoesNotExist:
         return Response({"Error": f"User not found"}, status=status.HTTP_400_BAD_REQUEST)

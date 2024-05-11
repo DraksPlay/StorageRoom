@@ -19,7 +19,7 @@ class OAuth2Core:
 
     def check_token(self,
                     token: str
-                    ) -> dict | bool:
+                    ) -> dict:
         return self._strategy.check_token(token)
 
     def get_payload(self,

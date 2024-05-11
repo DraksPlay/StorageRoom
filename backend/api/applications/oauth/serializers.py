@@ -27,3 +27,7 @@ class TokenUpdateSerializer(serializers.ModelSerializer):
 class SignInSerializer(serializers.Serializer):
     email = serializers.CharField(max_length=255)
     password = serializers.CharField(max_length=64)
+
+
+class CheckAuthSerializer(serializers.Serializer):
+    access_token = serializers.CharField()
