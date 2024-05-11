@@ -71,7 +71,7 @@ def sign_in(request: Request
         if sign_in_serializer.is_valid():
             email = sign_in_serializer.validated_data.get('email')
             password = sign_in_serializer.validated_data.get('password')
-            user = User.objects.get(login=email)
+            user = User.objects.get(email=email)
 
             if user.password != password:
                 return Response({"Error": f"Password invalid"}, status=status.HTTP_400_BAD_REQUEST)
