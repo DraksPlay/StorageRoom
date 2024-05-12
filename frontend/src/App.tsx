@@ -8,27 +8,20 @@ function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
     useEffect(() => {
-        const checkAuthentication = async () => {
-            const access_token = localStorage.getItem('access_token') || '';
-            const formData = { access_token };
-
-            try {
-                const response = await fetch('http://127.0.0.1:8000/auth/check-auth/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-                if (response.ok) {
-                    console.log(response)
-                    setIsAuthenticated(true);
-                }
-            } catch (error) {
-                console.error(error);
+        const access_token = localStorage.getItem('access_token') || '';
+        const formData = { access_token };
+        fetch(`${import.meta.env.VITE_BACKEND_API_URL}/auth/check-auth/`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        }).then(response => {
+            if (response.ok) {
+                setIsAuthenticated(true);
             }
-        };
-        checkAuthentication();
+        })
+
     }, []);
 
     return (
