@@ -75,7 +75,6 @@ def read_storage(request: Request,
 
 @swagger_auto_schema(method='GET', tags=["Storage"])
 @api_view(['GET'])
-@oauth_permission(oauth)
 def read_storages(request: Request
                   ) -> Response:
     storages = Storage.objects.all()
@@ -94,7 +93,6 @@ def read_storages(request: Request
 
 @swagger_auto_schema(method='GET', tags=["Category"])
 @api_view(['GET'])
-@oauth_permission(oauth)
 def read_categories(request: Request
                     ) -> Response:
     categories = Category.objects.all()
