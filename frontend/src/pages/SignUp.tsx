@@ -30,7 +30,6 @@ const SignUp = () => {
 
             if (response.ok) {
                 const responseData = await response.json();
-                console.log(responseData);
                 localStorage.setItem('access_token', responseData.access_token);
                 localStorage.setItem('refresh_token', responseData.refresh_token);
                 navigate("/");

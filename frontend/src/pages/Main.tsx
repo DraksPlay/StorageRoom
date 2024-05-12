@@ -1,10 +1,20 @@
+import {useEffect} from "react";
 
 const Main = () => {
+
+    useEffect(() => {
+        fetch(`${import.meta.env.VITE_BACKEND_API_URL}/api/storages/read_categories/`, {
+            method: 'GET'
+        }).then(response => {
+            if (response.ok) {
+                console.log(response);
+            }
+        })
+    }, []);
+
     return (
         <div>
-            <h1 className="text-3xl font-bold underline text-red-600">
-                Simple React Typescript Tailwind Sample
-            </h1>
+
         </div>
     );
 };
